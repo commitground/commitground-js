@@ -1,6 +1,6 @@
 {
   "name": "commitground",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "This is a javascript library to use commitground apis",
   "main": "index.js",
   "scripts": {
