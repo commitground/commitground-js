@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+  - '0.11'
+  - '0.10'
+
+after_success:
+  - CURRENT_VERSION=$(node -p "require('./package.json').version")
+  - LATEST=$(npm view $(node -p "require('./package.json').name") dist-tags.latest)
+  - STABLE=$(npm view $(node -p "require('./package.json').name") dist-tags.latest)
+
+deploy:
+  - provider: npm
+    email: admin.npm@commitground.org
+    api_key:
+      secure: Z6fl9gHT+8+srQqrs9Qbgg1IPBNJM/m7hmZYzeTc1ItqM4Mmv6raDpmzmZZRf4z9EHSWVRTz3KwSPeMGPNzINndll56HhQ+pr2FPrmxyBtsUWCVA8n5a1e9wxa5B5R+qyMjFrZaEC241KF/jWoDiBS90gmgRuyxaq6QGAovSqoO2pyLXSWuXXxUIPaYP3Py7ssFWHtnxhgJjY2RUltihYmlUleIvSNZUGXRFx5XAdpmfk8NoDV0tCTHGG7Qzx+SsDakt2ymIcm+H3kpLov2LOMYmGlQsVGv5kh+gOQ2C5ejCATvaoiVS3vzjNCytm6RJ/E0yy2FULoCxVnT0uiUaJSHQquWTK3qeAZxklQR87IW+SbS4stikINxoTYYZjUSzxCu1t6Ow3tP7QxTWgLLFUAldB5L86bezd94QYFyjoZzOm6Lq90E/ABpNcU0JrEJ3rd53zPyiJCu6iyocDLDz065OKMFL0PMleEnUAQZhJEu5xVJWJo48iNH6ucwTykBISpp+c4b8Emb83BMaikYayos/K/iTREOp9vV7y1zTJyUaaNDo3s+D4jjj8tjykEm0XqgstsVaFcCTpSRTFEZYZnWzq0GQFOGXyD5u0uqxPsRKuMIkEwO9Ayl+b0sKJTLDoCITKcBZIbUeMy62LEfjXGLOdwSM+M9Q5goT9gWz8U0=
+    tag: stable
+    on:
+      condition: $STABLE != CURRENT_VERSION
+      branch: master
+      repo: commitground/commitground-js
+  - provider: npm
+    email: admin.npm@commitground.org
+    api_key:
+      secure: Z6fl9gHT+8+srQqrs9Qbgg1IPBNJM/m7hmZYzeTc1ItqM4Mmv6raDpmzmZZRf4z9EHSWVRTz3KwSPeMGPNzINndll56HhQ+pr2FPrmxyBtsUWCVA8n5a1e9wxa5B5R+qyMjFrZaEC241KF/jWoDiBS90gmgRuyxaq6QGAovSqoO2pyLXSWuXXxUIPaYP3Py7ssFWHtnxhgJjY2RUltihYmlUleIvSNZUGXRFx5XAdpmfk8NoDV0tCTHGG7Qzx+SsDakt2ymIcm+H3kpLov2LOMYmGlQsVGv5kh+gOQ2C5ejCATvaoiVS3vzjNCytm6RJ/E0yy2FULoCxVnT0uiUaJSHQquWTK3qeAZxklQR87IW+SbS4stikINxoTYYZjUSzxCu1t6Ow3tP7QxTWgLLFUAldB5L86bezd94QYFyjoZzOm6Lq90E/ABpNcU0JrEJ3rd53zPyiJCu6iyocDLDz065OKMFL0PMleEnUAQZhJEu5xVJWJo48iNH6ucwTykBISpp+c4b8Emb83BMaikYayos/K/iTREOp9vV7y1zTJyUaaNDo3s+D4jjj8tjykEm0XqgstsVaFcCTpSRTFEZYZnWzq0GQFOGXyD5u0uqxPsRKuMIkEwO9Ayl+b0sKJTLDoCITKcBZIbUeMy62LEfjXGLOdwSM+M9Q5goT9gWz8U0=
+    tag: latest
+    on:
+      condition: $LATEST != CURRENT_VERSION
+      branch: develop
+      repo: commitground/commitground-js
