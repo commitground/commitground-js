@@ -1,8 +1,8 @@
-var assert = require('assert');
-var commitground = require('commitground');
+var assert = require('chai').assert;
+var commitground = require('../index.js');
 
-describe('Suite of test', function() {
-  it('should be passed', function() {
-    assert.ok(true)
+describe('hello()', function() {
+  it('should return "world"', function() {
+    assert(commitground.hello() === 'world', 'Passed Hello world test')
   })
 })

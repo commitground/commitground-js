@@ -5,6 +5,4 @@
  *
  */
 
-const Commitground = require('./src/Commitground');
-
-module.exports = Commitground;
+module.exports = require('./src/Commitground');
