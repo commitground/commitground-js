@@ -4,7 +4,7 @@
   "description": "This is a javascript library to use commitground apis",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "./scripts/migrate.sh && mocha",
     "lint": "./node_modules/.bin/eslint ."
   },
   "repository": {
@@ -24,6 +24,8 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
-    "mocha": "^5.2.0"
+    "ganache-cli": "^6.1.4",
+    "mocha": "^5.2.0",
+    "truffle": "^4.1.13"
   }
 }
