@@ -1,0 +1,59 @@
+language: node_js
+node_js:
+  - "stable"
+
+install:
+  - npm install
+
+script:
+  - npm run test
+
+after_success:
+  - export CURRENT_VERSION=$(node -p "require('./package.json').version")
+  - export LATEST=$(npm view $(node -p "require('./package.json').name") dist-tags.latest)
+  - export STABLE=$(npm view $(node -p "require('./package.json').name") dist-tags.stable)
+
+before_deploy:
+  - if [ "$LATEST" != "$CURRENT_VERSION" ] && [ "$TRAVIS_BRANCH" = "develop" ]; then
+      echo "on develop branch";
+      export TRAVIS_TAG=v$CURRENT_VERSION;
+    fi;
+  - if [ "$STABLE" != "$CURRENT_VERSION" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
+      echo "on master branch";
+      export TRAVIS_TAG=v$CURRENT_VERSION-stable;
+    fi;
+
+deploy:
+  - provider: npm
+    email: admin.npm@commitground.org
+    api_key:
+      secure: Z6fl9gHT+8+srQqrs9Qbgg1IPBNJM/m7hmZYzeTc1ItqM4Mmv6raDpmzmZZRf4z9EHSWVRTz3KwSPeMGPNzINndll56HhQ+pr2FPrmxyBtsUWCVA8n5a1e9wxa5B5R+qyMjFrZaEC241KF/jWoDiBS90gmgRuyxaq6QGAovSqoO2pyLXSWuXXxUIPaYP3Py7ssFWHtnxhgJjY2RUltihYmlUleIvSNZUGXRFx5XAdpmfk8NoDV0tCTHGG7Qzx+SsDakt2ymIcm+H3kpLov2LOMYmGlQsVGv5kh+gOQ2C5ejCATvaoiVS3vzjNCytm6RJ/E0yy2FULoCxVnT0uiUaJSHQquWTK3qeAZxklQR87IW+SbS4stikINxoTYYZjUSzxCu1t6Ow3tP7QxTWgLLFUAldB5L86bezd94QYFyjoZzOm6Lq90E/ABpNcU0JrEJ3rd53zPyiJCu6iyocDLDz065OKMFL0PMleEnUAQZhJEu5xVJWJo48iNH6ucwTykBISpp+c4b8Emb83BMaikYayos/K/iTREOp9vV7y1zTJyUaaNDo3s+D4jjj8tjykEm0XqgstsVaFcCTpSRTFEZYZnWzq0GQFOGXyD5u0uqxPsRKuMIkEwO9Ayl+b0sKJTLDoCITKcBZIbUeMy62LEfjXGLOdwSM+M9Q5goT9gWz8U0=
+    tag: stable
+    on:
+      condition: $STABLE != $CURRENT_VERSION
+      branch: master
+      repo: commitground/commitground-js
+  - provider: npm
+    email: admin.npm@commitground.org
+    api_key:
+      secure: Z6fl9gHT+8+srQqrs9Qbgg1IPBNJM/m7hmZYzeTc1ItqM4Mmv6raDpmzmZZRf4z9EHSWVRTz3KwSPeMGPNzINndll56HhQ+pr2FPrmxyBtsUWCVA8n5a1e9wxa5B5R+qyMjFrZaEC241KF/jWoDiBS90gmgRuyxaq6QGAovSqoO2pyLXSWuXXxUIPaYP3Py7ssFWHtnxhgJjY2RUltihYmlUleIvSNZUGXRFx5XAdpmfk8NoDV0tCTHGG7Qzx+SsDakt2ymIcm+H3kpLov2LOMYmGlQsVGv5kh+gOQ2C5ejCATvaoiVS3vzjNCytm6RJ/E0yy2FULoCxVnT0uiUaJSHQquWTK3qeAZxklQR87IW+SbS4stikINxoTYYZjUSzxCu1t6Ow3tP7QxTWgLLFUAldB5L86bezd94QYFyjoZzOm6Lq90E/ABpNcU0JrEJ3rd53zPyiJCu6iyocDLDz065OKMFL0PMleEnUAQZhJEu5xVJWJo48iNH6ucwTykBISpp+c4b8Emb83BMaikYayos/K/iTREOp9vV7y1zTJyUaaNDo3s+D4jjj8tjykEm0XqgstsVaFcCTpSRTFEZYZnWzq0GQFOGXyD5u0uqxPsRKuMIkEwO9Ayl+b0sKJTLDoCITKcBZIbUeMy62LEfjXGLOdwSM+M9Q5goT9gWz8U0=
+    tag: latest
+    on:
+      condition: $LATEST != $CURRENT_VERSION
+      branch: develop
+      repo: commitground/commitground-js
+  - provider: releases
+    api_key:
+      secure: rhevWkdtMrES50tAQEXoXMv+FJXgWxseuKXV0tT0alRYgnRdNQilsBpHgJpgyqwav29ZYbHLhfUP028oH3U+XGyeAXglf1Ddv6G26aoV+eiG7xWuK38yLMynGb20t+QvQXrRMg5w8J9P6JawjBpoahAdQoh9+KMnRf/8p6YlhBCq03tP3q4agGYDbzDEr9QYKirPXhEJulSorwifrcIZXjHWdR7xgEy8m6PzII5qV5fhCYYN+fNky428wDLS1bWpMKgWyO5Ph+rV7Tvc2KgrjaSYpF50WIoz9keeqBhUmrbTH2zMtfeuSm23CiI7zAGxJO0wWDm3q5j9ef1l8ciakvoMsbOerFLVWfexvcNwJ43jQFnqiEOm13DE7uXaIzBcEM50pgzAiYjUGL1q1SlzXLXSuyayK3ICl/b21Puqti9oTVxzuUJD4tK4p1MpP7SSPndNDT9Dxuc+F+bgiQaL1cHsmit+8Kylo4BSaGZyYFmevI7dRL4eGNrBvnafT+IulMSpqGU/M1D5qte50Ead+LWCUrMAXYCJ6Armk9DrTJrtHhUi7MFbz2pD7PLTlgQZ6/twPpMyk0mrYfP9yAr3PxcRi6LwBqUpx9pNOdLonAqtYElXSSk79Qbk94LTebcbE3/8/S4Wj7VSV+vIYIgUJ6OoE96f/839WQ+A7fcwiJo=
+    on:
+      tags: true
+      repo: commitground/commitground-js
+      branch: master
+  - provider: releases
+    prerelease: true
+    api_key:
+      secure: rhevWkdtMrES50tAQEXoXMv+FJXgWxseuKXV0tT0alRYgnRdNQilsBpHgJpgyqwav29ZYbHLhfUP028oH3U+XGyeAXglf1Ddv6G26aoV+eiG7xWuK38yLMynGb20t+QvQXrRMg5w8J9P6JawjBpoahAdQoh9+KMnRf/8p6YlhBCq03tP3q4agGYDbzDEr9QYKirPXhEJulSorwifrcIZXjHWdR7xgEy8m6PzII5qV5fhCYYN+fNky428wDLS1bWpMKgWyO5Ph+rV7Tvc2KgrjaSYpF50WIoz9keeqBhUmrbTH2zMtfeuSm23CiI7zAGxJO0wWDm3q5j9ef1l8ciakvoMsbOerFLVWfexvcNwJ43jQFnqiEOm13DE7uXaIzBcEM50pgzAiYjUGL1q1SlzXLXSuyayK3ICl/b21Puqti9oTVxzuUJD4tK4p1MpP7SSPndNDT9Dxuc+F+bgiQaL1cHsmit+8Kylo4BSaGZyYFmevI7dRL4eGNrBvnafT+IulMSpqGU/M1D5qte50Ead+LWCUrMAXYCJ6Armk9DrTJrtHhUi7MFbz2pD7PLTlgQZ6/twPpMyk0mrYfP9yAr3PxcRi6LwBqUpx9pNOdLonAqtYElXSSk79Qbk94LTebcbE3/8/S4Wj7VSV+vIYIgUJ6OoE96f/839WQ+A7fcwiJo=
+    on:
+      tags: true
+      repo: commitground/commitground-js
+      branch: develop

@@ -1,0 +1,3 @@
+[submodule "contract-dev-pack"]
+	path = contract-dev-pack
+	url = https://github.com/commitground/contract-dev-pack
