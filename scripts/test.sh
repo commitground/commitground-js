@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd contract-dev-pack
+cd `dirname "$0"` && cd ../commitground-contracts
 ganache-cli -p 7545 > /dev/null & pid=$!
-if ps | grep $pid;
+if ps -p $pid > /dev/null
 then
   echo "Running ganache..."
 else
@@ -12,7 +12,7 @@ fi
 sleep 5
 truffle migrate
 sleep 5
-cd ..
+cd `dirname "$0"` && cd ..
 mocha
 echo "Terminating ganache..."
 kill -9 $pid
